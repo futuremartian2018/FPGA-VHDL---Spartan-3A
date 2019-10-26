@@ -1,0 +1,10 @@
+
+Clock
+-----
+
+This demo shows how to create a 24 hour clock.
+
+Timer 0 is used to generate interrupt every 100us.
+R6 and R7 is used to extend the 100us to 1 second.
+
+KetilO

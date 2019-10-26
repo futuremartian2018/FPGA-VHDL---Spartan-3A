@@ -1,0 +1,248 @@
+TODO
+----
+Implement screen peek
+Implement screen copy
+What does MD and FS do?
+Compare behaviour to real hardware
+
+
+MD/FS
+-----
+MD		L:40/H:32		Selection of columns
+FS		L:8x8/H:6x8		Selection of font
+
+Attribute function
+--------------------------------------------------------------------------------------------------
+"Reverse display", "Character blink" and "Inhibit" are called "Attribute". The attribute data is written in the graphic
+area defined by control word set command. The mode set command selects text display only and graphic display cannot be
+displayed.
+The attribute data of the lst character in text area is written at the lst byte in graphic area, and attribute data of n-th
+character is written at the n-th byte in graphic area. Attribute function is defined as follow.
+Attribute RAM byte x x x x d3 d2 d1 d0
+d3 d2 d1 d0 Function
+0 0 0 0 Normal display
+0 1 0 1 Reverse display
+0 0 1 1 Inhibit display
+1 0 0 0 Blink of normal display
+1 1 0 1 Blink of reverse display
+1 0 1 1 Blink of inhibit display
+
+
+T6963C DOT MATRIX LCD CONTROL
+--------------------------------------------------------------------------------------------------
+
+Command Definitions
+--------------------------------------------------------------------------------------------------
+Command					Code		D1				D2				Function
+--------------------------------------------------------------------------------------------------
+REGISTERS SETTING		00100001	X address		Y address		Set Cursor Pointer
+						00100010	Data			00H				Set Offset Register
+						00100100	Low address		High address	Set Address Pointer
+--------------------------------------------------------------------------------------------------
+SET CONTROL WORD		01000000	Low address		High address	Set Text Home Address
+						01000001	Columns			00H				Set Text Area
+						01000010	Low address		High address	Set Graphic Home Address
+						01000011	Columns			00H				Set Graphic Area
+--------------------------------------------------------------------------------------------------
+MODE SET				1000X000									OR mode
+						1000X001									EXOR mode
+						1000X011									AND mode
+						1000X100									Text Attribute mode
+						10000XXX									Internal CG ROM mode
+						10001XXX									External CG RAM mode
+--------------------------------------------------------------------------------------------------
+DISPLAY MODE			10010000									Display off
+						1001XX10									Cursor on, blink off
+						1001XX11									Cursor on, blink on
+						100101XX									Text on, graphic off
+						100110XX									Text off, graphic on
+						100111XX									Text on, graphic on
+--------------------------------------------------------------------------------------------------
+CURSOR PATTERN SELECT	10100000									1.line cursor
+						10100001									2.line cursor
+						10100010									3.line cursor
+						10100011									4.line cursor
+						10100100									5.line cursor
+						10100101									6.line cursor
+						10100110									7.line cursor
+						10100111									8.line cursor
+--------------------------------------------------------------------------------------------------
+DATA AUTO READ / WRITE	10110000									Set Data Auto Write
+						10110001									Set Data Auto Read
+						10110010									Auto Reset
+--------------------------------------------------------------------------------------------------
+DATA READ / WRITE		11000000	Data							Data Write and Increment ADP
+						11000001									Data Read and Increment ADP
+						11000010	Data							Data Write and Decrement ADP
+						11000011									Data Read and Decrement ADP
+						11000100	Data							Data Write and Nonvariable ADP
+						11000101									Data Read and Nonvariable ADP
+--------------------------------------------------------------------------------------------------
+SCREEN PEEK				11100000									Screen Peek
+--------------------------------------------------------------------------------------------------
+SCREEN COPY				11101000									Screen Copy
+--------------------------------------------------------------------------------------------------
+
+**************************************************************************************************
+
+Status byte
+-------------------------------------------------------------------------------------
+STA0	Check command execution capability			0:Disable, 1:Enable
+STA1	Check data read / write capability			0:Disable, 1:Enable
+STA2	Check Auto mode data read capability		0:Disable, 1:Enable
+STA3	Check Auto mode data write capability		0:Disable, 1:Enable
+STA4	Not used
+STA5	Check controller operation capability		0:Disable, 1:Enable
+STA6	Error flag. Screen Peek and Screen copy		0:No error, 1=Error
+STA7	Check the blink condition					0:Display off, 1=Normal display
+-------------------------------------------------------------------------------------
+
+
+Setting registers
+-------------------------------------------------------------------------
+Code		Hex	Function						D1			D2
+-------------------------------------------------------------------------
+00100001	21H	SET CURSOR POINTER				X ADRS		Y ADRS
+00100010	22H	SET OFFSET REGISTER				DATA		00H
+00100100	24H	SET ADDRESS POINTER				LOW ADRS	HIGH ADRS
+-------------------------------------------------------------------------
+
+
+Set Control Word
+-------------------------------------------------------------------------
+Code		Hex	Function						D1			D2
+-------------------------------------------------------------------------
+01000000	40H	Set Text Home Address			Low address High address
+01000001	41H	Set Text Area					Columns		00H
+01000010	42H	Set Graphic Home Address		Low address	High address
+01000011	43H	Set Graphic Area				Columns		00H
+-------------------------------------------------------------------------
+The home address and column size are defined by this command.
+
+
+Mode set
+--------------------------------------------------------
+Code		Hex	Function						Operand
+--------------------------------------------------------
+1000X000		OR Mode
+1000X001		EXOR Mode
+1000X011		AND Mode
+1000X100		TEXT ATTRIBUTE Mode
+10000XXX		Internal Character Generator Mode
+10001XXX		External Character Generator Mode
+--------------------------------------------------------
+The display mode is defined by this command. The display mode does not change until the next command is
+sent. The logical OR, EXOR, AND of text or graphic display can be displayed.
+In Internal Character Generator mode, character codes 00H to 7FH are assigned to the built.in character
+generator ROM. The character codes 80H to FFH are automatically assigned to the external character
+generator RAM.
+
+
+Display mode
+--------------------------------------------------------
+Code		Hex	Function						Operand
+--------------------------------------------------------
+10010000		Display off
+1001XX10		Cursor on, blink off
+1001XX11		Cursor on, blink on
+100101XX		Text on, graphic off
+100110XX		Text off, graphic on
+100111XX		Text on, graphic on
+--------------------------------------------------------
+
+
+Cursor pattern select
+--------------------------------------------------------
+Code		Hex	Function						Operand
+--------------------------------------------------------
+10100000	A0H	1.line cursor
+10100001	A1H	2.line cursor
+10100010	A2H	3.line cursor
+10100011	A3H	4.line cursor
+10100100	A4H	5.line cursor
+10100101	A5H	6.line cursor
+10100110	A6H	7.line cursor
+10100111	A7H	8.line cursor
+--------------------------------------------------------
+When cursor display is ON, this command selects the cursor pattern in the range 1 line to 8 lines. The cursor
+address is defined by the Cursor Pointer Set command.
+
+
+Data Auto Read / Write
+--------------------------------------------------------
+Code		Hex	Function						Operand
+--------------------------------------------------------
+10110000	B0H	Set Data Auto Write
+10110001	B1H	Set Data Auto Read
+10110010	B2H	Auto Reset
+--------------------------------------------------------
+This command is convenient for sending a full screen of data from the external display RAM. After setting
+Auto mode, a Data Write (or Read) command is need not be sent between each datum. A Data Auto Write (or
+Read) command must be sent after a Set Address Pointer command. After this command, the address pointer
+is automatically incremented by 1 after each datum. In Auto mode, the T6963C cannot accept any other
+commands.
+The Auto Reset command must be sent to the T6963C after all data has been sent, to clear Auto mode.
+
+
+Data Read / Write
+--------------------------------------------------------
+Code		Hex	Function						Operand
+--------------------------------------------------------
+11000000	C0H	Data Write and Increment ADP	Data
+11000001	C1H	Data Read and Increment ADP
+11000010	C2H	Data Write and Decrement ADP	Data
+11000011	C3H	Data Read and Decrement ADP
+11000100	C4H	Data Write and Nonvariable ADP	Data
+11000101	C5H	Data Read and Nonvariable ADP
+--------------------------------------------------------
+This command is used for writing data from the MPU to external display RAM, and reading data from
+external display RAM to the MPU. Data Write / Data Read should be executed after setting address using
+Set Address Pointer command. The address pointer can be automatically incremented or decremented using
+this command.
+
+
+Screen Peek
+--------------------------------------------------------
+Code		Hex	Function						Operand
+--------------------------------------------------------
+11100000	E0H	Screen Peek
+--------------------------------------------------------
+This command is used to transfer 1 byte of displayed data to the data stack; this byte can then be read from
+the MPU by data access. The logical combination of text and graphic display data on the LCD screen can be
+read by this command.
+The status (STA6) should be checked just after the Screen Peek command. If the address determined by the
+Set Address Pointer command is not in the graphic area, this command is ignored and a status flag (STA6) is
+set.
+
+
+Screen Copy
+--------------------------------------------------------
+Code		Hex	Function						Operand
+--------------------------------------------------------
+11101000	E8H	Screen Copy
+--------------------------------------------------------
+This command copies a single raster line of data to the graphic area.
+The start point must be set using the Set Address Pointer command.
+Note 1: If the attribute function is being used, this command is not available.
+(With Attribute data is graphic area data.)
+Note 2: With Dual.Scan, this command cannot be used (because the T6963C cannot separate the upper screen
+data and lower screen data).
+
+
+Bit Set / Reset
+--------------------------------------------------------
+Code		Hex	Function						Operand
+--------------------------------------------------------
+11110XXX		Bit Reset
+11111XXX		Bit Set
+1111X000		Bit 0 (LSB)
+1111X001		Bit 1
+1111X010		Bit 2
+1111X011		Bit 3
+1111X100		Bit 4
+1111X101		Bit 5
+1111X110		Bit 6
+1111X111		Bit 7 (MSB)
+--------------------------------------------------------
+This command use to set or reset a bit of the byte specified by the address pointer. Only one bit can be set /
+reset at a time.

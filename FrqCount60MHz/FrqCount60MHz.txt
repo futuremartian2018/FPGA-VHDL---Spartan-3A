@@ -1,0 +1,11 @@
+
+60MHz Frequency counter.
+------------------------
+
+The 74HC590 is used as an 8 bit counter with Q7 connected to
+timer 0 event input. When timer 0 overflows it increments the
+TF0OVF 8 bit variable.
+Thus the output of the 74HC590, TL0, TH0 and TF0OVF forms a
+32 bit counter.
+
+KetilO

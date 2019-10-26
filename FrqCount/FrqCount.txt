@@ -1,0 +1,9 @@
+
+1 MHz Frequency counter
+-----------------------
+
+Timer 0 is used as an event counter.
+Each time the timer overflows it increments the TF0OVF byte variable.
+Thus TL0, TH0 and TF0OVF forms a 24 bit event counter.
+
+KetilO

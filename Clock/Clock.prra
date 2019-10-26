@@ -1,0 +1,22 @@
+[Version]
+Version=3000
+[Project]
+Assembler=asemw
+Path=C:\FbEdit\Projects\Applications\FbEdit\Sim52\Projects\Clock
+Group=2,-1,0,1,LCD Clock,-2,-1,1,Assembly,-3,-1,1,Include,-4,-1,1,Misc,-5,-1,1,Resource
+F1=-2,2,1,22,22,600,400,31,Clock.a51
+Open=0,1
+Api=
+C1=0
+B1=
+M1=
+F2=-2,0,2,-6,-25,1250,643,4,Clock.sim
+C2=
+B2=
+M2=
+[Make]
+Make=0
+0=Release,'',,'"$C"',"$C.hex",'"$C" "$O"',"$C.cmd",'',
+Delete=0
+IncBuild=0
+Run=0,'',''

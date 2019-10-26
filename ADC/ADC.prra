@@ -1,0 +1,30 @@
+[Version]
+Version=3000
+[Project]
+Assembler=asemw
+Path=C:\FbEdit\Projects\Applications\FbEdit\Sim52\Projects\ADC
+Group=2,-1,0,1,MCP3208 ADC,-2,-1,1,Assembly,-4,-1,1,Misc
+F1=-2,2,1,22,22,600,400,307,ADC.a51
+F2=-4,0,2,44,44,600,400,18,ADC.txt
+Open=2,1,4,2
+Api=
+C1=0
+B1=
+M1=
+F3=-4,0,0,0,0,0,0,0,ADC.cad
+F4=-2,0,1,154,154,934,491,394,FP52INT.a51
+C4=0
+B4=
+M4=
+C3=
+B3=
+M3=
+C2=
+B2=
+M2=
+[Make]
+Make=0
+0=Release,'',,'"$C"',"$C.hex",'"$C" "$O"',"$C.cmd",'',
+Delete=0
+IncBuild=0
+Run=0,'',''

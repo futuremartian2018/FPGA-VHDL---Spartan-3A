@@ -1,0 +1,9 @@
+
+This is a fully functional 8 digit floating point calculator.
+The first thing you will notice is there is no '=' key.
+To execut the previous function, press the '+','-','*' or '/' key.
+
+The floating point package is not created by me but has been modified
+to use intarnal ram instrad of XRam.
+
+KetilO

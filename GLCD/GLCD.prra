@@ -1,0 +1,19 @@
+[Version]
+Version=3000
+[Project]
+Assembler=asemw
+Path=C:\FbEdit\Projects\Applications\FbEdit\Sim52\Projects\GLCD
+Group=2,-1,0,1,Graphic LCD test,-2,-1,1,Assembly,-4,-1,1,Misc
+F1=-2,2,1,22,22,600,400,417,GLCD.a51
+F2=-4,0,2,44,44,600,400,0,GLCD.txt
+Open=0,1
+Api=
+C1=0
+B1=
+M1=
+[Make]
+Make=0
+0=Release,'',,'"$C"',"$C.hex",'"$C" "$O"',"$C.cmd",'',
+Delete=0
+IncBuild=0
+Run=0,'','GLCD.sim'

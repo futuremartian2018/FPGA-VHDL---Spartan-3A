@@ -1,0 +1,18 @@
+[Version]
+Version=3000
+[Project]
+Assembler=asemw
+Path=D:\FbEdit\Projects\Applications\FbEdit\Sim52\Projects\FrqCount60MHz
+Group=2,-1,0,1,60 MHz Frequency Counter,-2,-1,1,Assembly
+F1=-2,2,1,22,22,600,400,16,FrqCount60MHz.a51
+Open=0,1
+Api=
+C1=0
+B1=
+M1=
+[Make]
+Make=0
+0=Release,'',,'"$C"',"$C.hex",'"$C" "$O"',"$C.cmd",'',
+Delete=0
+IncBuild=0
+Run=0,'',''
